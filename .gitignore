@@ -1,4 +1,4 @@
-# Logs
+# Node.js / React / Vite
 logs
 *.log
 npm-debug.log*
@@ -22,3 +22,34 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Android / Gradle files
+.gradle/
+build/
+local.properties
+captures/
+.externalNativeBuild/
+.cxx/
+*.aab
+*.apk
+output-metadata.json
+*.iml
+misc.xml
+deploymentTargetDropDown.xml
+render.experimental.xml
+
+# Keystore files
+*.jks
+*.keystore
+
+# Google Services (e.g. APIs or Firebase)
+google-services.json
+
+# Android Profiling
+*.hprof
+
+# Capacitor
+ios/
+android/App/Pods
+android/App/public
+android/App/Podfile.lock
