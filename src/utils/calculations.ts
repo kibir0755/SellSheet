@@ -1,4 +1,5 @@
 export interface Ingredient {
+  id: string;
   name: string;
   quantity: number;
   unit: string;
@@ -10,6 +11,9 @@ export interface BusinessExpenses {
   interestExpenses: number;   // Loan interest, credit card interest, etc.
   taxes: number;              // Business taxes
   otherExpenses: number;      // Miscellaneous business expenses
+  laborCost: number;          // Labor costs
+  overheadCost: number;       // Overhead costs
+  packagingCost: number;      // Packaging costs
 }
 
 export interface ProfitAnalysis {
@@ -20,10 +24,26 @@ export interface ProfitAnalysis {
   totalExpenses: number;
   netProfit: number;
   netProfitMargin: number;
+  ingredientsCost: number;    // Total ingredients cost
+  totalProfit: number;        // Same as netProfit
+  profitMargin: number;       // Same as netProfitMargin
 }
 
-export const calculateTotalCost = (ingredients: Ingredient[]): number => {
-  return ingredients.reduce((sum, ing) => sum + (Number(ing.cost) || 0), 0);
+export const calculateTotalCost = (ingredients: Ingredient[], businessExpenses?: BusinessExpenses, includeBusinessExpenses?: boolean): number => {
+  const ingredientsCost = ingredients.reduce((sum, ing) => sum + (Number(ing.cost) || 0), 0);
+  
+  if (includeBusinessExpenses && businessExpenses) {
+    return ingredientsCost + 
+           businessExpenses.laborCost + 
+           businessExpenses.overheadCost + 
+           businessExpenses.packagingCost +
+           businessExpenses.operatingExpenses + 
+           businessExpenses.interestExpenses + 
+           businessExpenses.taxes + 
+           businessExpenses.otherExpenses;
+  }
+  
+  return ingredientsCost;
 };
 
 export const calculateSuggestedPrice = (totalCost: number, marginPercent: number): number => {
@@ -57,13 +77,15 @@ export const calculateNetProfitMargin = (netProfit: number, revenue: number): nu
 export const calculateComprehensiveProfitAnalysis = (
   ingredients: Ingredient[], 
   suggestedPrice: number,
-  businessExpenses: BusinessExpenses
+  businessExpenses: BusinessExpenses,
+  includeBusinessExpenses?: boolean
 ): ProfitAnalysis => {
   const cogs = calculateTotalCost(ingredients);
   const totalRevenue = suggestedPrice;
   const grossProfit = calculateGrossProfit(totalRevenue, cogs);
   const grossProfitMargin = calculateGrossProfitMargin(grossProfit, totalRevenue);
-  const totalExpenses = calculateTotalExpenses(cogs, businessExpenses);
+  const totalExpenses = includeBusinessExpenses ? 
+    calculateTotalExpenses(cogs, businessExpenses) : cogs;
   const netProfit = calculateNetProfit(totalRevenue, totalExpenses);
   const netProfitMargin = calculateNetProfitMargin(netProfit, totalRevenue);
 
@@ -74,7 +96,10 @@ export const calculateComprehensiveProfitAnalysis = (
     grossProfitMargin,
     totalExpenses,
     netProfit,
-    netProfitMargin
+    netProfitMargin,
+    ingredientsCost: cogs,
+    totalProfit: netProfit,
+    profitMargin: netProfitMargin
   };
 };
 
@@ -98,6 +123,7 @@ export const validateIngredient = (ingredient: Ingredient): boolean => {
 };
 
 export const getDefaultIngredient = (): Ingredient => ({
+  id: Math.random().toString(36).substr(2, 9),
   name: "",
   quantity: 1,
   unit: "g",
@@ -108,5 +134,8 @@ export const getDefaultBusinessExpenses = (): BusinessExpenses => ({
   operatingExpenses: 0,
   interestExpenses: 0,
   taxes: 0,
-  otherExpenses: 0
+  otherExpenses: 0,
+  laborCost: 0,
+  overheadCost: 0,
+  packagingCost: 0
 });
