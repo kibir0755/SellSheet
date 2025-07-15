@@ -1,0 +1,722 @@
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Download, FileText, Trash2, Plus, Sun, Moon, Calculator, DollarSign } from "lucide-react";
+import jsPDF from "jspdf";
+import Papa from "papaparse";
+import autoTable from "jspdf-autotable";
+import { 
+  calculateTotalCost, 
+  calculateSuggestedPrice, 
+  calculateComprehensiveProfitAnalysis,
+  getDefaultIngredient,
+  getDefaultBusinessExpenses,
+  validateIngredient,
+  formatCurrency,
+  formatPercentage,
+  type Ingredient,
+  type BusinessExpenses,
+  type ProfitAnalysis
+} from "./utils/calculations";
+import { 
+  UNITS, 
+  DEFAULT_MARGIN, 
+  MAX_MARGIN, 
+  MIN_MARGIN, 
+  STORAGE_KEY,
+  APP_NAME,
+  APP_TAGLINE
+} from "./constants";
+
+function IngredientInput({
+  ingredient,
+  onChange,
+  onRemove,
+  canRemove,
+}: {
+  ingredient: Ingredient;
+  onChange: (key: keyof Ingredient, value: string | number) => void;
+  onRemove: () => void;
+  canRemove: boolean;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.2 }}
+      className="relative bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl p-6 mb-4 shadow-lg hover:shadow-xl transition-all duration-200"
+    >
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
+        <div className="md:col-span-1">
+          <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+            Ingredient
+          </label>
+          <input
+            className="w-full bg-transparent border-2 border-zinc-300 dark:border-zinc-600 rounded-lg py-2 px-3 text-base font-medium outline-none focus:border-blue-500 dark:focus:border-blue-400 transition-colors dark:text-white"
+            placeholder="e.g., Flour"
+            value={ingredient.name}
+            onChange={e => onChange("name", e.target.value)}
+          />
+        </div>
+        
+        <div>
+          <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+            Quantity
+          </label>
+          <input
+            type="number"
+            className="w-full bg-transparent border-2 border-zinc-300 dark:border-zinc-600 rounded-lg py-2 px-3 text-right outline-none focus:border-blue-500 dark:focus:border-blue-400 transition-colors dark:text-white"
+            min={0}
+            step="0.01"
+            placeholder="0"
+            value={ingredient.quantity || ''}
+            onChange={e => onChange("quantity", Number(e.target.value))}
+          />
+        </div>
+        
+        <div>
+          <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+            Unit
+          </label>
+          <select
+            className="w-full bg-transparent border-2 border-zinc-300 dark:border-zinc-600 rounded-lg py-2 px-3 outline-none focus:border-blue-500 dark:focus:border-blue-400 transition-colors dark:text-white"
+            value={ingredient.unit}
+            onChange={e => onChange("unit", e.target.value)}
+          >
+            {UNITS.map(u => <option key={u} value={u}>{u}</option>)}
+          </select>
+        </div>
+        
+        <div>
+          <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+            Cost ($)
+          </label>
+          <input
+            type="number"
+            className="w-full bg-transparent border-2 border-zinc-300 dark:border-zinc-600 rounded-lg py-2 px-3 text-right outline-none focus:border-blue-500 dark:focus:border-blue-400 transition-colors dark:text-white"
+            min={0}
+            step="0.01"
+            placeholder="0.00"
+            value={ingredient.cost || ''}
+            onChange={e => onChange("cost", Number(e.target.value))}
+          />
+        </div>
+      </div>
+      
+      {canRemove && (
+        <motion.button
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          className="absolute -top-3 -right-3 bg-red-500 hover:bg-red-600 text-white rounded-full p-2 w-8 h-8 shadow-lg transition-colors flex items-center justify-center"
+          onClick={onRemove}
+          title="Remove ingredient"
+        >
+          <Trash2 size={14} />
+        </motion.button>
+      )}
+      
+      <div className="mt-4 p-3 bg-zinc-50 dark:bg-zinc-900 rounded-lg">
+        <div className="text-sm text-zinc-600 dark:text-zinc-400">
+          {ingredient.cost && ingredient.quantity ? (
+            <div className="flex justify-between items-center">
+              <span>
+                Total: <span className="font-semibold text-zinc-800 dark:text-zinc-200">${ingredient.cost.toFixed(2)}</span>
+              </span>
+              <span>
+                Per {ingredient.unit}: <span className="font-semibold text-zinc-800 dark:text-zinc-200">${(ingredient.cost / ingredient.quantity).toFixed(2)}</span>
+              </span>
+            </div>
+          ) : (
+            <span className="text-zinc-500">Enter cost & quantity to see calculations</span>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+export default function App() {
+  const [ingredients, setIngredients] = useState<Ingredient[]>([getDefaultIngredient()]);
+  const [margin, setMargin] = useState(DEFAULT_MARGIN);
+  const [businessExpenses, setBusinessExpenses] = useState<BusinessExpenses>(getDefaultBusinessExpenses());
+  const [showAdvancedMode, setShowAdvancedMode] = useState(false);
+  const [dark, setDark] = useState(() =>
+    window.matchMedia("(prefers-color-scheme: dark)").matches
+  );
+
+  // Load data from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try {
+        const data = JSON.parse(saved);
+        if (data.ingredients) setIngredients(data.ingredients);
+        if (data.margin) setMargin(data.margin);
+        if (data.businessExpenses) setBusinessExpenses(data.businessExpenses);
+        if (data.showAdvancedMode !== undefined) setShowAdvancedMode(data.showAdvancedMode);
+      } catch (error) {
+        console.warn('Failed to load saved data:', error);
+      }
+    }
+  }, []);
+
+  // Save data to localStorage when it changes
+  useEffect(() => {
+    const data = { ingredients, margin, businessExpenses, showAdvancedMode };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }, [ingredients, margin, businessExpenses, showAdvancedMode]);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", dark);
+  }, [dark]);
+
+  // Calculation logic using comprehensive profit analysis
+  const totalCost = calculateTotalCost(ingredients);
+  const suggestedPrice = calculateSuggestedPrice(totalCost, margin);
+  const profitAnalysis = calculateComprehensiveProfitAnalysis(ingredients, suggestedPrice, businessExpenses);
+
+  const updateIngredient = (idx: number, key: keyof Ingredient, value: string | number) => {
+    setIngredients(ings => {
+      const updated = [...ings];
+      updated[idx] = { ...updated[idx], [key]: value };
+      return updated;
+    });
+  };
+
+  const updateBusinessExpense = (key: keyof BusinessExpenses, value: number) => {
+    setBusinessExpenses(prev => ({ ...prev, [key]: value }));
+  };
+
+  const addIngredient = () =>
+    setIngredients(ings => [...ings, getDefaultIngredient()]);
+
+  const removeIngredient = (idx: number) =>
+    setIngredients(ings => ings.length === 1 ? ings : ings.filter((_, i) => i !== idx));
+
+  // Export functions
+  const exportToPDF = () => {
+    const doc = new jsPDF();
+    
+    // Title
+    doc.setFontSize(20);
+    doc.text(`${APP_NAME} ${APP_TAGLINE}`, 20, 30);
+    
+    // Summary
+    doc.setFontSize(12);
+    doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 20, 45);
+    
+    // Comprehensive Profit Analysis
+    doc.setFontSize(14);
+    doc.text('Revenue & Cost Analysis', 20, 65);
+    doc.setFontSize(10);
+    doc.text(`Total Revenue: ${formatCurrency(profitAnalysis.totalRevenue)}`, 20, 75);
+    doc.text(`Cost of Goods Sold (COGS): ${formatCurrency(profitAnalysis.cogs)}`, 20, 85);
+    doc.text(`Gross Profit: ${formatCurrency(profitAnalysis.grossProfit)} (${formatPercentage(profitAnalysis.grossProfitMargin)})`, 20, 95);
+    
+    if (showAdvancedMode) {
+      doc.text(`Operating Expenses: ${formatCurrency(businessExpenses.operatingExpenses)}`, 20, 105);
+      doc.text(`Interest Expenses: ${formatCurrency(businessExpenses.interestExpenses)}`, 20, 115);
+      doc.text(`Taxes: ${formatCurrency(businessExpenses.taxes)}`, 20, 125);
+      doc.text(`Other Expenses: ${formatCurrency(businessExpenses.otherExpenses)}`, 20, 135);
+      doc.text(`Total Expenses: ${formatCurrency(profitAnalysis.totalExpenses)}`, 20, 145);
+      doc.text(`Net Profit: ${formatCurrency(profitAnalysis.netProfit)} (${formatPercentage(profitAnalysis.netProfitMargin)})`, 20, 155);
+    } else {
+      doc.text(`Profit Margin: ${margin}%`, 20, 105);
+    }
+    
+    // Table data - only include valid ingredients
+    const validIngredients = ingredients.filter(validateIngredient);
+    const tableData = validIngredients.map(ing => [
+      ing.name,
+      ing.quantity.toString(),
+      ing.unit,
+      formatCurrency(ing.cost),
+      formatCurrency(ing.cost / ing.quantity)
+    ]);
+    
+    // Create table
+    autoTable(doc, {
+      startY: showAdvancedMode ? 170 : 120,
+      head: [['Ingredient', 'Quantity', 'Unit', 'Total Cost', 'Cost per Unit']],
+      body: tableData,
+      theme: 'grid',
+      styles: { fontSize: 10 },
+      headStyles: { fillColor: [59, 130, 246] }
+    });
+    
+    doc.save(`${APP_NAME.toLowerCase()}-analysis-${new Date().toISOString().split('T')[0]}.pdf`);
+  };
+
+  const exportToCSV = () => {
+    const validIngredients = ingredients.filter(validateIngredient);
+    const csvData = [
+      [`${APP_NAME} ${APP_TAGLINE} Export`],
+      ['Generated on:', new Date().toLocaleDateString()],
+      [''],
+      ['Profit Analysis'],
+      ['Total Revenue:', formatCurrency(profitAnalysis.totalRevenue)],
+      ['Cost of Goods Sold (COGS):', formatCurrency(profitAnalysis.cogs)],
+      ['Gross Profit:', formatCurrency(profitAnalysis.grossProfit)],
+      ['Gross Profit Margin:', formatPercentage(profitAnalysis.grossProfitMargin)],
+    ];
+
+    if (showAdvancedMode) {
+      csvData.push(
+        [''],
+        ['Business Expenses'],
+        ['Operating Expenses:', formatCurrency(businessExpenses.operatingExpenses)],
+        ['Interest Expenses:', formatCurrency(businessExpenses.interestExpenses)],
+        ['Taxes:', formatCurrency(businessExpenses.taxes)],
+        ['Other Expenses:', formatCurrency(businessExpenses.otherExpenses)],
+        ['Total Expenses:', formatCurrency(profitAnalysis.totalExpenses)],
+        ['Net Profit:', formatCurrency(profitAnalysis.netProfit)],
+        ['Net Profit Margin:', formatPercentage(profitAnalysis.netProfitMargin)]
+      );
+    } else {
+      csvData.push(['Profit Margin:', `${margin}%`]);
+    }
+
+    csvData.push(
+      [''],
+      ['Ingredients'],
+      ['Name', 'Quantity', 'Unit', 'Total Cost', 'Cost per Unit'],
+      ...validIngredients.map(ing => [
+        ing.name,
+        ing.quantity.toString(),
+        ing.unit,
+        ing.cost.toFixed(2),
+        (ing.cost / ing.quantity).toFixed(2)
+      ])
+    );
+    
+    const csv = Papa.unparse(csvData);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `${APP_NAME.toLowerCase()}-analysis-${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-zinc-900 dark:via-zinc-900 dark:to-zinc-800 transition-all duration-500">
+      <div className="container mx-auto px-4 py-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-4xl mx-auto"
+        >
+          {/* Header */}
+          <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-xl border border-zinc-200 dark:border-zinc-700 p-8 mb-8">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="p-3 bg-blue-100 dark:bg-blue-900 rounded-xl">
+                  <Calculator className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                </div>
+                <div>
+                  <h1 className="text-3xl font-bold text-zinc-800 dark:text-white">
+                    {APP_NAME}
+                  </h1>
+                  <p className="text-zinc-600 dark:text-zinc-400">{APP_TAGLINE}</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-3">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setShowAdvancedMode(!showAdvancedMode)}
+                  className={`px-4 py-2 rounded-xl transition-colors font-medium ${
+                    showAdvancedMode 
+                      ? 'bg-blue-600 text-white' 
+                      : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-white hover:bg-zinc-200 dark:hover:bg-zinc-700'
+                  }`}
+                  title="Toggle advanced profit analysis"
+                >
+                  {showAdvancedMode ? 'Simple Mode' : 'Advanced Mode'}
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setDark(d => !d)}
+                  className="p-3 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-xl transition-colors"
+                  title="Toggle dark mode"
+                >
+                  {dark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                </motion.button>
+              </div>
+            </div>
+          </div>
+
+          {/* Main Content */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Ingredients Section */}
+            <div className="lg:col-span-2">
+              <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-xl border border-zinc-200 dark:border-zinc-700 p-8">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-bold text-zinc-800 dark:text-white">
+                    Ingredients
+                  </h2>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-xl shadow-lg transition-colors"
+                    onClick={addIngredient}
+                  >
+                    <Plus size={18} />
+                    Add Ingredient
+                  </motion.button>
+                </div>
+                
+                <AnimatePresence>
+                  {ingredients.map((ingredient, idx) => (
+                    <IngredientInput
+                      key={idx}
+                      ingredient={ingredient}
+                      canRemove={ingredients.length > 1}
+                      onChange={(key, value) => updateIngredient(idx, key, value)}
+                      onRemove={() => removeIngredient(idx)}
+                    />
+                  ))}
+                </AnimatePresence>
+              </div>
+            </div>
+
+            {/* Summary & Controls */}
+            <div className="space-y-6">
+              {/* Advanced Mode Toggle Info */}
+              {showAdvancedMode && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-2xl p-4"
+                >
+                  <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">
+                    Advanced Profit Analysis
+                  </h4>
+                  <p className="text-sm text-blue-700 dark:text-blue-300">
+                    This mode calculates true net profit margin by including all business expenses 
+                    (operating costs, interest, taxes, etc.) as per standard accounting practices.
+                  </p>
+                </motion.div>
+              )}
+
+              {/* Business Expenses (Advanced Mode) */}
+              {showAdvancedMode && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-white dark:bg-zinc-900 rounded-2xl shadow-xl border border-zinc-200 dark:border-zinc-700 p-6"
+                >
+                  <h3 className="text-lg font-semibold text-zinc-800 dark:text-white mb-4">
+                    Business Expenses
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+                        Operating Expenses ($)
+                      </label>
+                      <input
+                        type="number"
+                        className="w-full border-2 border-zinc-300 dark:border-zinc-600 bg-transparent rounded-lg px-3 py-2 focus:border-blue-500 dark:focus:border-blue-400 transition-colors dark:text-white"
+                        placeholder="Rent, salaries, marketing..."
+                        value={businessExpenses.operatingExpenses || ''}
+                        min={0}
+                        step="0.01"
+                        onChange={e => updateBusinessExpense('operatingExpenses', Number(e.target.value))}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+                        Interest Expenses ($)
+                      </label>
+                      <input
+                        type="number"
+                        className="w-full border-2 border-zinc-300 dark:border-zinc-600 bg-transparent rounded-lg px-3 py-2 focus:border-blue-500 dark:focus:border-blue-400 transition-colors dark:text-white"
+                        placeholder="Loan interest, credit cards..."
+                        value={businessExpenses.interestExpenses || ''}
+                        min={0}
+                        step="0.01"
+                        onChange={e => updateBusinessExpense('interestExpenses', Number(e.target.value))}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+                        Taxes ($)
+                      </label>
+                      <input
+                        type="number"
+                        className="w-full border-2 border-zinc-300 dark:border-zinc-600 bg-transparent rounded-lg px-3 py-2 focus:border-blue-500 dark:focus:border-blue-400 transition-colors dark:text-white"
+                        placeholder="Business taxes..."
+                        value={businessExpenses.taxes || ''}
+                        min={0}
+                        step="0.01"
+                        onChange={e => updateBusinessExpense('taxes', Number(e.target.value))}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+                        Other Expenses ($)
+                      </label>
+                      <input
+                        type="number"
+                        className="w-full border-2 border-zinc-300 dark:border-zinc-600 bg-transparent rounded-lg px-3 py-2 focus:border-blue-500 dark:focus:border-blue-400 transition-colors dark:text-white"
+                        placeholder="Miscellaneous costs..."
+                        value={businessExpenses.otherExpenses || ''}
+                        min={0}
+                        step="0.01"
+                        onChange={e => updateBusinessExpense('otherExpenses', Number(e.target.value))}
+                      />
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Profit Margin Control (Simple Mode) */}
+              {!showAdvancedMode && (
+                <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-xl border border-zinc-200 dark:border-zinc-700 p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <DollarSign className="w-6 h-6 text-green-600 dark:text-green-400" />
+                    <h3 className="text-lg font-semibold text-zinc-800 dark:text-white">
+                      Profit Margin
+                    </h3>
+                  </div>
+                  <div className="space-y-3">
+                    <input
+                      type="range"
+                      className="w-full h-2 bg-zinc-200 dark:bg-zinc-700 rounded-lg appearance-none cursor-pointer slider"
+                      min={MIN_MARGIN}
+                      max={MAX_MARGIN}
+                      value={margin}
+                      onChange={e => setMargin(Number(e.target.value))}
+                    />
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="number"
+                        className="flex-1 border-2 border-zinc-300 dark:border-zinc-600 bg-transparent rounded-lg px-3 py-2 text-right font-mono text-lg focus:border-blue-500 dark:focus:border-blue-400 transition-colors dark:text-white"
+                        value={margin}
+                        min={MIN_MARGIN}
+                        max={MAX_MARGIN}
+                        onChange={e => setMargin(Number(e.target.value))}
+                      />
+                      <span className="text-lg font-semibold text-zinc-600 dark:text-zinc-400">%</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Summary Cards */}
+              <div className="space-y-4">
+                {/* Revenue Card */}
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl shadow-xl p-6 text-white"
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-blue-100 text-sm font-medium">Total Revenue</p>
+                      <p className="text-3xl font-bold">{formatCurrency(profitAnalysis.totalRevenue)}</p>
+                    </div>
+                    <Calculator className="w-8 h-8 text-blue-200" />
+                  </div>
+                </motion.div>
+
+                {/* COGS Card */}
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl shadow-xl p-6 text-white"
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-orange-100 text-sm font-medium">Cost of Goods Sold</p>
+                      <p className="text-3xl font-bold">{formatCurrency(profitAnalysis.cogs)}</p>
+                    </div>
+                    <DollarSign className="w-8 h-8 text-orange-200" />
+                  </div>
+                </motion.div>
+
+                {/* Gross Profit Card */}
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  className="bg-gradient-to-r from-green-500 to-green-600 rounded-2xl shadow-xl p-6 text-white"
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-green-100 text-sm font-medium">Gross Profit</p>
+                      <p className="text-3xl font-bold">{formatCurrency(profitAnalysis.grossProfit)}</p>
+                      <p className="text-green-200 text-sm">{formatPercentage(profitAnalysis.grossProfitMargin)} margin</p>
+                    </div>
+                    <DollarSign className="w-8 h-8 text-green-200" />
+                  </div>
+                </motion.div>
+
+                {/* Net Profit Card (Advanced Mode Only) */}
+                {showAdvancedMode && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    whileHover={{ scale: 1.02 }}
+                    className={`rounded-2xl shadow-xl p-6 text-white ${
+                      profitAnalysis.netProfit >= 0 
+                        ? 'bg-gradient-to-r from-purple-500 to-purple-600' 
+                        : 'bg-gradient-to-r from-red-500 to-red-600'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className={`text-sm font-medium ${
+                          profitAnalysis.netProfit >= 0 ? 'text-purple-100' : 'text-red-100'
+                        }`}>
+                          Net Profit (True Profit)
+                        </p>
+                        <p className="text-3xl font-bold">{formatCurrency(profitAnalysis.netProfit)}</p>
+                        <p className={`text-sm ${
+                          profitAnalysis.netProfit >= 0 ? 'text-purple-200' : 'text-red-200'
+                        }`}>
+                          {formatPercentage(profitAnalysis.netProfitMargin)} margin
+                        </p>
+                      </div>
+                      <DollarSign className={`w-8 h-8 ${
+                        profitAnalysis.netProfit >= 0 ? 'text-purple-200' : 'text-red-200'
+                      }`} />
+                    </div>
+                  </motion.div>
+                )}
+
+                {/* Simple Mode Profit Card */}
+                {!showAdvancedMode && (
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    className="bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl shadow-xl p-6 text-white"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-purple-100 text-sm font-medium">Estimated Profit</p>
+                        <p className="text-3xl font-bold">{formatCurrency(profitAnalysis.grossProfit)}</p>
+                        <p className="text-purple-200 text-sm">{margin}% markup</p>
+                      </div>
+                      <DollarSign className="w-8 h-8 text-purple-200" />
+                    </div>
+                  </motion.div>
+                )}
+              </div>
+
+              {/* Export Controls */}
+              <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-xl border border-zinc-200 dark:border-zinc-700 p-6">
+                <h3 className="text-lg font-semibold text-zinc-800 dark:text-white mb-4">
+                  Export Data
+                </h3>
+                <div className="space-y-3">
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={exportToPDF}
+                    className="w-full flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-4 rounded-xl transition-colors"
+                  >
+                    <FileText size={18} />
+                    Export as PDF
+                  </motion.button>
+                  
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={exportToCSV}
+                    className="w-full flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-4 rounded-xl transition-colors"
+                  >
+                    <Download size={18} />
+                    Export as CSV
+                  </motion.button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div className="text-center mt-8 text-zinc-500 dark:text-zinc-400 text-sm">
+            All prices in USD. Data is automatically saved to your browser.
+            <br />
+            {showAdvancedMode ? (
+              <>
+                Advanced mode shows <strong>true net profit margin</strong> including all business expenses.
+                <br />
+              </>
+            ) : (
+              <>
+                Switch to Advanced Mode for comprehensive profit analysis with business expenses.
+                <br />
+              </>
+            )}
+            Powered by <span className="font-semibold text-blue-600 dark:text-blue-400">{APP_NAME}</span>
+          </div>
+                {!showAdvancedMode && (
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    className="bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl shadow-xl p-6 text-white"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-purple-100 text-sm font-medium">Estimated Profit</p>
+                        <p className="text-3xl font-bold">{formatCurrency(profitAnalysis.grossProfit)}</p>
+                        <p className="text-purple-200 text-sm">{margin}% markup</p>
+                      </div>
+                      <DollarSign className="w-8 h-8 text-purple-200" />
+                    </div>
+                  </motion.div>
+                )}
+              </div>
+
+              {/* Export Controls */}
+              <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-xl border border-zinc-200 dark:border-zinc-700 p-6">
+                <h3 className="text-lg font-semibold text-zinc-800 dark:text-white mb-4">
+                  Export Data
+                </h3>
+                <div className="space-y-3">
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={exportToPDF}
+                    className="w-full flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-4 rounded-xl transition-colors"
+                  >
+                    <FileText size={18} />
+                    Export as PDF
+                  </motion.button>
+                  
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={exportToCSV}
+                    className="w-full flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-4 rounded-xl transition-colors"
+                  >
+                    <Download size={18} />
+                    Export as CSV
+                  </motion.button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div className="text-center mt-8 text-zinc-500 dark:text-zinc-400 text-sm">
+            All prices in USD. Data is automatically saved to your browser.
+            <br />
+            {showAdvancedMode ? (
+              <>
+                Advanced mode shows <strong>true net profit margin</strong> including all business expenses.
+                <br />
+              </>
+            ) : (
+              <>
+                Switch to Advanced Mode for comprehensive profit analysis with business expenses.
+                <br />
+              </>
+            )}
+            Powered by <span className="font-semibold text-blue-600 dark:text-blue-400">{APP_NAME}</span>
+          </div>
+        </motion.div>
+      </div>
+    </div>
+  );
+}

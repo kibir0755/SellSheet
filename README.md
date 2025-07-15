@@ -1,70 +1,234 @@
-# Getting Started with Create React App
+# SellSheet Pro - Advanced Profit Calculator
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A modern, feature-rich profit calculator for ingredients and products with PWA capabilities. Built with React 19, TypeScript, Vite, and Tailwind CSS.
 
-## Available Scripts
+## ✨ Features
 
-In the project directory, you can run:
+### Core Functionality
+- **🧮 Real-time Calculations**: Automatic calculation of total costs, suggested prices, and profit margins
+- **📊 Ingredient Management**: Add, edit, and remove ingredients with quantities, units, and costs
+- **💡 Smart Profit Margins**: Interactive slider and input for profit margin adjustment (0-1000%)
+- **🌙 Dark Mode**: Beautiful light and dark themes with system preference detection
 
-### `npm start`
+### Advanced Business Analysis
+- **🚀 Advanced Mode**: Toggle between simple and comprehensive profit analysis
+- **💼 Business Expenses**: Track operating costs, interest, taxes, and other expenses
+- **📈 True Net Profit**: Calculate actual net profit margin including all business costs
+- **💰 Comprehensive Reporting**: Detailed breakdown of COGS, gross profit, and net profit
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Modern Enhancements
+- **💾 Auto-Save**: Automatic data persistence using localStorage
+- **📄 PDF Export**: Generate professional PDF reports with ingredient details and calculations
+- **📊 CSV Export**: Export data to CSV for spreadsheet analysis
+- **✨ Smooth Animations**: Framer Motion powered animations and micro-interactions
+- **🎨 Modern UI**: Clean, responsive design with glassmorphism effects
+- **📱 Mobile-Friendly**: Fully responsive across all device sizes
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### PWA Features (Progressive Web App)
+- **📱 Installable App**: Add to home screen on Android/iOS devices
+- **🔄 Offline Support**: Works without internet connection
+- **⚡ Fast Loading**: Cached resources for instant startup
+- **🔔 Smart Install Prompts**: Automatic PWA installation suggestions
+- **📡 Network Status**: Offline/online status indicators
+- **🏠 Home Screen Integration**: Native app-like experience
 
-### `npm test`
+### Technical Features
+- **⚡ Fast Development**: Vite for lightning-fast development and builds
+- **🔧 Type Safety**: Full TypeScript support with proper type definitions
+- **🎨 Styling**: Tailwind CSS for utility-first styling
+- **📦 Component Architecture**: Well-organized, reusable components
+- **🧪 Modern React**: React 19 with hooks and functional components
+- **⚙️ Service Worker**: Workbox-powered offline functionality
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 🚀 Getting Started
 
-### `npm run build`
+1. **Install dependencies**:
+   ```bash
+   npm install
+   ```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+2. **Start development server**:
+   ```bash
+   npm run dev
+   ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+3. **Build for production**:
+   ```bash
+   npm run build
+   ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+4. **Preview production build**:
+   ```bash
+   npm run preview
+   ```
 
-### `npm run eject`
+## 🛠️ Technologies Used
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+- **React 19** - Modern React with latest features
+- **TypeScript** - Type-safe JavaScript
+- **Vite** - Fast build tool and dev server
+- **Tailwind CSS** - Utility-first CSS framework
+- **Framer Motion** - Animation library
+- **Lucide React** - Beautiful icons
+- **jsPDF** - PDF generation
+- **Papa Parse** - CSV parsing and generation
+- **Vite PWA Plugin** - Progressive Web App functionality
+- **Workbox** - Service worker and offline support
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 📁 Project Structure
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```
+src/
+├── utils/               # Utility functions and calculations
+├── constants/           # App constants and configuration
+├── App.tsx             # Main application component
+├── main.tsx            # Application entry point
+└── index.css           # Global styles and Tailwind imports
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## 🎯 Usage
 
-## Learn More
+1. **Add Ingredients**: Click "Add Ingredient" to add new ingredients to your calculation
+2. **Enter Details**: Fill in ingredient name, quantity, unit, and cost
+3. **Set Profit Margin**: Use the slider or input field to set your desired profit margin
+4. **Advanced Mode**: Toggle advanced mode for comprehensive business expense analysis
+5. **View Results**: See real-time calculations for total cost, suggested price, and profit
+6. **Export Data**: Generate PDF reports or CSV files for your records
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 📱 PWA Installation
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Android/Mobile Installation
+1. **Open in Chrome/Edge**: Navigate to the app in a mobile browser
+2. **Install Prompt**: Look for the "Install App" button or browser install prompt
+3. **Add to Home Screen**: Follow browser instructions to add to home screen
+4. **Launch**: Open from home screen for native app experience
 
-### Code Splitting
+### Desktop Installation
+1. **Open in Chrome/Edge**: Navigate to the app in browser
+2. **Install Icon**: Look for install icon in address bar or app menu
+3. **Install**: Click install to add to desktop/apps menu
+4. **Offline**: App works completely offline after installation
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### PWA Benefits
+- ⚡ **Instant Loading**: Cached app loads immediately
+- 🔄 **Offline Access**: Full functionality without internet
+- 📱 **Native Feel**: App-like experience with native UI
+- 🏠 **Home Screen**: Direct access from device home screen
+- 🔔 **Background Updates**: Automatic app updates when online
 
-### Analyzing the Bundle Size
+## 🌟 Key Improvements Made
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### UI/UX Enhancements
+- ✅ Complete UI redesign with modern glassmorphism effects
+- ✅ Improved form inputs with proper labels and validation
+- ✅ Interactive profit margin slider with visual feedback
+- ✅ Gradient backgrounds and modern color schemes
+- ✅ Smooth animations and hover effects
+- ✅ Advanced mode toggle for comprehensive analysis
 
-### Making a Progressive Web App
+### PWA Integration
+- ✅ Progressive Web App with full offline support
+- ✅ Installable on Android/iOS home screens
+- ✅ Service worker with Workbox for caching
+- ✅ Smart install prompts and network status
+- ✅ Native app-like experience
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### Advanced Features
+- ✅ True net profit margin calculations
+- ✅ Business expense tracking and analysis
+- ✅ Comprehensive profit breakdown (COGS, gross, net)
+- ✅ Advanced/simple mode toggle
 
-### Advanced Configuration
+### Functionality Enhancements
+- ✅ Working PDF export with professional formatting
+- ✅ Working CSV export with complete data
+- ✅ Data persistence across browser sessions
+- ✅ Better ingredient validation
+- ✅ Improved calculation accuracy
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### Code Quality
+- ✅ TypeScript integration with proper types
+- ✅ Modular component architecture
+- ✅ Utility functions for calculations
+- ✅ Constants file for configuration
+- ✅ Clean, maintainable code structure
 
-### Deployment
+## 🐛 Bug Fixes
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+- ✅ Fixed missing type definitions for papaparse
+- ✅ Enabled previously disabled export features
+- ✅ Improved dark mode implementation
+- ✅ Fixed responsive design issues
+- ✅ Enhanced accessibility
 
-### `npm run build` fails to minify
+## 🔮 Future Enhancements
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- [ ] Recipe management and saving
+- [ ] Multiple currency support
+- [ ] Batch ingredient import
+- [ ] Cost tracking over time
+- [ ] Supplier management
+- [ ] Enhanced native mobile features (Push notifications, etc.)
+- [ ] Cloud sync and backup
+- [ ] Multi-language support
+
+---
+
+**Powered by SellSheet Pro** - Professional profit calculations with PWA technology.
+
+```js
+export default tseslint.config([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+
+      // Remove tseslint.configs.recommended and replace with this
+      ...tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      ...tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      ...tseslint.configs.stylisticTypeChecked,
+
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
+
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
+
+export default tseslint.config([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
