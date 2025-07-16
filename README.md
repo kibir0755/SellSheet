@@ -2,6 +2,8 @@
 
 A modern, feature-rich profit calculator for ingredients and products with PWA capabilities. Built with React 19, TypeScript, Vite, and Tailwind CSS.
 
+**Version: 2.0.0 - Beautiful Modern Design** ✨
+
 ## ✨ Features
 
 ### Core Functionality
