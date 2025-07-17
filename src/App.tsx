@@ -296,12 +296,17 @@ export default function App() {
   };
 
   const deleteRecipe = (recipeId: string) => {
-    const updatedRecipes = savedRecipes.filter(recipe => recipe.id !== recipeId);
-    setSavedRecipes(updatedRecipes);
-    localStorage.setItem('sellsheet-saved-recipes', JSON.stringify(updatedRecipes));
+    console.log('Deleting recipe with ID:', recipeId);
+    if (confirm('Are you sure you want to delete this recipe?')) {
+      const updatedRecipes = savedRecipes.filter(recipe => recipe.id !== recipeId);
+      setSavedRecipes(updatedRecipes);
+      localStorage.setItem('sellsheet-saved-recipes', JSON.stringify(updatedRecipes));
+      console.log('Recipe deleted successfully');
+    }
   };
 
   const loadRecipe = (recipe: SavedRecipe) => {
+    console.log('Loading recipe:', recipe.name);
     setIngredients(recipe.ingredients);
     setBusinessExpenses(recipe.businessExpenses);
     setMargin(recipe.margin);
@@ -309,6 +314,7 @@ export default function App() {
     setServings(recipe.servings);
     setRecipeName(recipe.name);
     setCurrentView('calculator');
+    console.log('Recipe loaded, switching to calculator view');
   };
 
   // Calculations
@@ -798,19 +804,19 @@ export default function App() {
                         </div>
 
                         <div className="flex gap-3">
-                          <Button 
+                          <button 
                             onClick={() => loadRecipe(recipe)}
-                            className="flex-1 btn-gradient-success"
+                            className="flex-1 btn-gradient-success px-4 py-2 rounded-lg font-semibold text-white transition-all duration-300 hover:transform hover:translateY(-2px)"
                           >
                             Edit
-                          </Button>
-                          <Button 
+                          </button>
+                          <button 
                             onClick={() => deleteRecipe(recipe.id)}
-                            className="flex-1 btn-gradient-danger"
+                            className="flex-1 btn-gradient-danger px-4 py-2 rounded-lg font-semibold text-white transition-all duration-300 hover:transform hover:translateY(-2px) flex items-center justify-center"
                           >
                             <Trash2 className="mr-2 h-4 w-4" />
                             Delete
-                          </Button>
+                          </button>
                         </div>
                       </CardContent>
                     </Card>
