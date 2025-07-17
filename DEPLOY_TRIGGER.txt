@@ -1,0 +1,4 @@
+FORCE DEPLOY TRIGGER - July 17, 2025 4:30 PM
+This file is created to trigger GitHub Actions deployment.
+Working native HTML edit/delete buttons implemented.
+Version 3.0 - Force deployed with clear version indicators.

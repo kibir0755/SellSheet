@@ -220,16 +220,17 @@ export default function App() {
 
   // Apply 3D tilt effect to interactive cards
   useEffect(() => {
-    const elements = document.querySelectorAll<HTMLElement>(".interactive-card");
-    if (elements.length) {
-      VanillaTilt.init(Array.from(elements), {
-        max: 25,
-        speed: 400,
-        perspective: 1000,
-        glare: true,
-        "max-glare": 0.3
-      });
-    }
+    // Temporarily disabled to test button functionality
+    // const elements = document.querySelectorAll<HTMLElement>(".interactive-card");
+    // if (elements.length) {
+    //   VanillaTilt.init(Array.from(elements), {
+    //     max: 25,
+    //     speed: 400,
+    //     perspective: 1000,
+    //     glare: true,
+    //     "max-glare": 0.3
+    //   });
+    // }
     // Reinitialize on view or data change
   }, [currentView, savedRecipes]);
 
@@ -296,17 +297,21 @@ export default function App() {
   };
 
   const deleteRecipe = (recipeId: string) => {
-    console.log('Deleting recipe with ID:', recipeId);
+    console.log('deleteRecipe function called with ID:', recipeId);
+    console.log('Current savedRecipes:', savedRecipes);
     if (confirm('Are you sure you want to delete this recipe?')) {
       const updatedRecipes = savedRecipes.filter(recipe => recipe.id !== recipeId);
+      console.log('Updated recipes after deletion:', updatedRecipes);
       setSavedRecipes(updatedRecipes);
       localStorage.setItem('sellsheet-saved-recipes', JSON.stringify(updatedRecipes));
       console.log('Recipe deleted successfully');
+    } else {
+      console.log('Deletion cancelled by user');
     }
   };
 
   const loadRecipe = (recipe: SavedRecipe) => {
-    console.log('Loading recipe:', recipe.name);
+    console.log('loadRecipe function called with recipe:', recipe);
     setIngredients(recipe.ingredients);
     setBusinessExpenses(recipe.businessExpenses);
     setMargin(recipe.margin);
@@ -314,7 +319,7 @@ export default function App() {
     setServings(recipe.servings);
     setRecipeName(recipe.name);
     setCurrentView('calculator');
-    console.log('Recipe loaded, switching to calculator view');
+    console.log('Recipe loaded successfully, view should switch to calculator');
   };
 
   // Calculations
@@ -399,7 +404,7 @@ export default function App() {
           <div className="mr-4 flex items-center">
             <Calculator className="mr-2 h-6 w-6 text-primary animate-pulse-glow" />
             <span className="heading-4 bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
-              SellSheet Pro
+              SellSheet Pro - LIVE v3.0 (July 17, 2025 - 4:30 PM) 🚀 FORCE DEPLOYED
             </span>
           </div>
           <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
@@ -734,9 +739,9 @@ export default function App() {
               <div className="teal-gradient-header text-white p-8 rounded-2xl shadow-2xl">
                 <h2 className="text-3xl font-bold flex items-center gap-3 mb-2">
                   <FileText className="h-8 w-8" />
-                  Saved Recipes ({savedRecipes.length})
+                  Saved Recipes ({savedRecipes.length}) - July 17, 2025
                 </h2>
-                <p className="text-lg opacity-90">Manage your collection of profitable recipes</p>
+                <p className="text-lg opacity-90">🔥 LATEST VERSION - Working Edit/Delete Buttons! 🔥 - v3.0 FORCE DEPLOYED</p>
               </div>
             </div>
 
@@ -766,7 +771,7 @@ export default function App() {
                     true
                   );
                   return (
-                    <Card key={recipe.id} className="interactive-card modern-card overflow-hidden">
+                    <Card key={recipe.id} className="modern-card overflow-hidden">
                       <div className="recipe-card-header text-white p-6">
                         <div className="flex items-center justify-between">
                           <h3 className="text-2xl font-bold">{recipe.name}</h3>
@@ -804,29 +809,29 @@ export default function App() {
                         </div>
 
                         <div className="flex gap-3">
-                          <Button
-                            variant="default"
-                            size="default"
+                          <button
                             onClick={() => {
                               console.log('Edit button clicked for recipe:', recipe.name);
+                              console.log('Recipe object:', recipe);
                               loadRecipe(recipe);
                             }}
-                            className="flex-1 btn-gradient-success px-4 py-2 rounded-lg font-semibold text-white transition-all duration-300 hover:transform hover:translateY(-2px)"
+                            className="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-200 cursor-pointer"
+                            onMouseOver={() => console.log('Edit button hovered')}
                           >
                             Edit
-                          </Button>
-                          <Button
-                            variant="default"
-                            size="default"
+                          </button>
+                          <button
                             onClick={() => {
                               console.log('Delete button clicked for recipe:', recipe.name);
+                              console.log('Recipe ID:', recipe.id);
                               deleteRecipe(recipe.id);
                             }}
-                            className="flex-1 btn-gradient-danger px-4 py-2 rounded-lg font-semibold text-white transition-all duration-300 hover:transform hover:translateY(-2px) flex items-center justify-center"
+                            className="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-200 cursor-pointer flex items-center justify-center"
+                            onMouseOver={() => console.log('Delete button hovered')}
                           >
                             <Trash2 className="mr-2 h-4 w-4" />
                             Delete
-                          </Button>
+                          </button>
                         </div>
                       </CardContent>
                     </Card>
