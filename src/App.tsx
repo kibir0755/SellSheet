@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Download, FileText, Trash2, Plus, Sun, Moon, Calculator, DollarSign, Search } from "lucide-react";
 import { useTheme } from "next-themes";
 import jsPDF from "jspdf";
+import VanillaTilt from "vanilla-tilt";
 import Papa from "papaparse";
 import autoTable from "jspdf-autotable";
 
@@ -216,6 +217,21 @@ export default function App() {
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
   }, []);
+
+  // Apply 3D tilt effect to interactive cards
+  useEffect(() => {
+    const elements = document.querySelectorAll<HTMLElement>(".interactive-card");
+    if (elements.length) {
+      VanillaTilt.init(Array.from(elements), {
+        max: 25,
+        speed: 400,
+        perspective: 1000,
+        glare: true,
+        "max-glare": 0.3
+      });
+    }
+    // Reinitialize on view or data change
+  }, [currentView, savedRecipes]);
 
   const handleInstallPWA = async () => {
     if (deferredPrompt) {
@@ -614,58 +630,58 @@ export default function App() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="space-y-4">
+                <div className="profit-analysis-center">
                   <motion.div 
-                    className="revenue-card flex justify-between items-center p-4 rounded-lg"
+                    className="revenue-card profit-metric-row"
                     whileHover={{ scale: 1.02 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <span className="body-small font-medium text-blue-700 dark:text-blue-300">Ingredients</span>
-                    <span className="currency-display text-blue-900 dark:text-blue-100">
+                    <span className="profit-metric-label text-blue-700 dark:text-blue-300">Ingredients</span>
+                    <span className="profit-metric-value text-blue-900 dark:text-blue-100">
                       {formatCurrency(profitAnalysis.ingredientsCost)}
                     </span>
                   </motion.div>
 
                   <motion.div 
-                    className="cost-card flex justify-between items-center p-4 rounded-lg"
+                    className="cost-card profit-metric-row"
                     whileHover={{ scale: 1.02 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <span className="body-small font-medium text-orange-700 dark:text-orange-300">Total Cost</span>
-                    <span className="currency-display text-orange-900 dark:text-orange-100">
+                    <span className="profit-metric-label text-orange-700 dark:text-orange-300">Total Cost</span>
+                    <span className="profit-metric-value text-orange-900 dark:text-orange-100">
                       {formatCurrency(totalCost)}
                     </span>
                   </motion.div>
 
                   <motion.div 
-                    className="profit-card flex justify-between items-center p-4 rounded-lg"
+                    className="profit-card profit-metric-row"
                     whileHover={{ scale: 1.02 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <span className="body-small font-medium text-green-700 dark:text-green-300">Profit</span>
-                    <span className="currency-display text-green-900 dark:text-green-100">
+                    <span className="profit-metric-label text-green-700 dark:text-green-300">Profit</span>
+                    <span className="profit-metric-value text-green-900 dark:text-green-100">
                       {formatCurrency(profitAnalysis.totalProfit)}
                     </span>
                   </motion.div>
 
                   <motion.div 
-                    className="margin-card flex justify-between items-center p-4 rounded-lg"
+                    className="margin-card profit-metric-row"
                     whileHover={{ scale: 1.02 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <span className="body-small font-medium text-purple-700 dark:text-purple-300">Margin</span>
-                    <span className="currency-display text-purple-900 dark:text-purple-100">
+                    <span className="profit-metric-label text-purple-700 dark:text-purple-300">Margin</span>
+                    <span className="profit-metric-value text-purple-900 dark:text-purple-100">
                       {formatPercentage(profitAnalysis.profitMargin)}
                     </span>
                   </motion.div>
 
                   <motion.div 
-                    className="neutral-card flex justify-between items-center p-4 rounded-lg"
+                    className="neutral-card profit-metric-row"
                     whileHover={{ scale: 1.02 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <span className="body-small font-medium">Per Serving</span>
-                    <span className="currency-display">
+                    <span className="profit-metric-label">Per Serving</span>
+                    <span className="profit-metric-value">
                       {formatCurrency(sellingPrice)}
                     </span>
                   </motion.div>
@@ -735,7 +751,7 @@ export default function App() {
                 </CardContent>
               </Card>
             ) : (
-              <div className="grid gap-6">
+              <div className="recipe-grid-center">
                 {savedRecipes.map((recipe) => {
                   const recipeProfit = calculateComprehensiveProfitAnalysis(
                     recipe.ingredients,

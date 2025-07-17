@@ -1,5 +1,9 @@
 import { ThemeProvider as NextThemesProvider } from "next-themes"
 
 export function ThemeProvider({ children, ...props }: any) {
-  return <NextThemesProvider {...props}>{children}</NextThemesProvider>
+  return (
+    <NextThemesProvider {...props} attribute="class">
+      {children}
+    </NextThemesProvider>
+  );
 }

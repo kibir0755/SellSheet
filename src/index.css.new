@@ -73,29 +73,18 @@
     color: #f9fafb;
   }
   
-  /* Main container centering - Enhanced */
+  /* Main container centering */
   .main-container {
-    max-width: 1600px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 2rem;
     width: 100%;
     box-sizing: border-box;
   }
   
-  .container {
-    max-width: 1400px !important;
-    margin: 0 auto !important;
-    padding-left: 1.5rem !important;
-    padding-right: 1.5rem !important;
-  }
-  
   @media (max-width: 768px) {
     .main-container {
       padding: 1rem;
-    }
-    .container {
-      padding-left: 1rem !important;
-      padding-right: 1rem !important;
     }
   }
 }
@@ -106,8 +95,6 @@
   color: white;
   position: relative;
   overflow: hidden;
-  text-align: center;
-  padding: 3rem 2rem;
 }
 
 .teal-gradient-header::before {
@@ -117,22 +104,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(45deg, rgba(255,255,255,0.15) 0%, transparent 50%, rgba(255,255,255,0.15) 100%);
-  opacity: 0.4;
-}
-
-.teal-gradient-header h2 {
-  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  font-weight: 900;
-  margin-bottom: 1rem;
-  position: relative;
-  z-index: 2;
-}
-
-.teal-gradient-header p {
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  position: relative;
-  z-index: 2;
+  background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(255,255,255,0.1) 100%);
+  opacity: 0.3;
 }
 
 .recipe-card-header {
@@ -140,7 +113,6 @@
   color: white;
   position: relative;
   overflow: hidden;
-  text-align: center;
 }
 
 .recipe-card-header::before {
@@ -150,41 +122,33 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(45deg, rgba(255,255,255,0.15) 0%, transparent 50%, rgba(255,255,255,0.15) 100%);
-  opacity: 0.4;
-}
-
-.recipe-card-header h3 {
-  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  position: relative;
-  z-index: 2;
+  background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(255,255,255,0.1) 100%);
+  opacity: 0.3;
 }
 
 .modern-card {
-  background: rgba(255, 255, 255, 0.98) !important;
-  backdrop-filter: blur(16px) !important;
-  border: 2px solid rgba(255, 255, 255, 0.8) !important;
-  box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.15), 0 8px 24px -8px rgba(0, 0, 0, 0.1) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(226, 232, 240, 0.6) !important;
+  box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.1), 0 4px 16px -4px rgba(0, 0, 0, 0.06) !important;
   transition: all 0.3s ease-in-out !important;
-  border-radius: 20px !important;
+  border-radius: 16px !important;
 }
 
 .dark .modern-card {
-  background: rgba(15, 23, 42, 0.98) !important;
-  backdrop-filter: blur(16px) !important;
-  border: 2px solid rgba(71, 85, 105, 0.8) !important;
-  box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.5), 0 8px 24px -8px rgba(0, 0, 0, 0.4) !important;
+  background: rgba(15, 23, 42, 0.95) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(71, 85, 105, 0.6) !important;
+  box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.4), 0 4px 16px -4px rgba(0, 0, 0, 0.3) !important;
 }
 
 .modern-card:hover {
-  transform: translateY(-6px) !important;
-  box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.2), 0 12px 32px -8px rgba(0, 0, 0, 0.15) !important;
-  border-color: rgba(59, 130, 246, 0.6) !important;
+  transform: translateY(-4px) !important;
+  box-shadow: 0 16px 48px -8px rgba(0, 0, 0, 0.15), 0 8px 24px -4px rgba(0, 0, 0, 0.1) !important;
 }
 
 .dark .modern-card:hover {
-  box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.6), 0 12px 32px -8px rgba(0, 0, 0, 0.5) !important;
-  border-color: rgba(99, 102, 241, 0.6) !important;
+  box-shadow: 0 16px 48px -8px rgba(0, 0, 0, 0.5), 0 8px 24px -4px rgba(0, 0, 0, 0.4) !important;
 }
 
 .interactive-card {
@@ -199,73 +163,27 @@
 /* Enhanced Typography for Better Readability */
 .section-title {
   font-size: 1.5rem;
-  font-weight: 800;
-  color: #0f172a;
+  font-weight: 700;
+  color: #111827;
   margin-bottom: 0.5rem;
-  letter-spacing: -0.01em;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  letter-spacing: 0.01em;
 }
 
 .dark .section-title {
-  color: #f8fafc;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  color: #f9fafb;
 }
 
 .section-description {
   font-size: 1rem;
-  color: #1e293b;
+  color: #374151;
   margin-bottom: 1.5rem;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.6;
   letter-spacing: 0.01em;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .dark .section-description {
-  color: #e2e8f0;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-}
-
-.heading-3 {
-  font-size: 1.75rem;
-  font-weight: 800;
-  line-height: 2rem;
-  color: #0f172a;
-  letter-spacing: -0.01em;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.dark .heading-3 {
-  color: #f8fafc;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.heading-4 {
-  font-size: 2.25rem;
-  font-weight: 900;
-  line-height: 2.5rem;
-  color: #0f172a;
-  letter-spacing: -0.02em;
-  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-.dark .heading-4 {
-  color: #f8fafc;
-  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-}
-
-.body-small {
-  font-size: 0.875rem;
-  line-height: 1.5;
-  color: #334155;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-}
-
-.dark .body-small {
-  color: #cbd5e1;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  color: #d1d5db;
 }
 
 /* Modern Input Styling - Enhanced but Clean */
@@ -365,18 +283,15 @@
   color: white;
   border: none;
   transition: all 0.3s ease-in-out;
-  box-shadow: 0 8px 20px -4px rgba(59, 130, 246, 0.5);
-  font-weight: 700;
+  box-shadow: 0 4px 14px -2px rgba(59, 130, 246, 0.4);
+  font-weight: 600;
   letter-spacing: 0.02em;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  border-radius: 16px;
-  padding: 14px 28px;
 }
 
 .btn-gradient-primary:hover {
   background: linear-gradient(135deg, #2563eb 0%, #5b21b6 100%);
-  transform: translateY(-3px);
-  box-shadow: 0 12px 28px -4px rgba(59, 130, 246, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px -2px rgba(59, 130, 246, 0.5);
 }
 
 .btn-gradient-success {
@@ -384,18 +299,17 @@
   color: white;
   border: none;
   transition: all 0.3s ease-in-out;
-  box-shadow: 0 8px 20px -4px rgba(16, 185, 129, 0.5);
-  font-weight: 700;
+  box-shadow: 0 4px 14px -2px rgba(16, 185, 129, 0.4);
+  font-weight: 600;
   letter-spacing: 0.02em;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  padding: 16px 32px;
-  border-radius: 16px;
+  padding: 14px 28px;
+  border-radius: 12px;
 }
 
 .btn-gradient-success:hover {
   background: linear-gradient(135deg, #059669 0%, #047857 100%);
-  transform: translateY(-3px);
-  box-shadow: 0 12px 28px -4px rgba(16, 185, 129, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px -2px rgba(16, 185, 129, 0.5);
 }
 
 .btn-gradient-danger {
@@ -403,18 +317,15 @@
   color: white;
   border: none;
   transition: all 0.3s ease-in-out;
-  box-shadow: 0 8px 20px -4px rgba(239, 68, 68, 0.5);
-  font-weight: 700;
+  box-shadow: 0 4px 14px -2px rgba(239, 68, 68, 0.4);
+  font-weight: 600;
   letter-spacing: 0.02em;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  border-radius: 16px;
-  padding: 14px 28px;
 }
 
 .btn-gradient-danger:hover {
   background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-  transform: translateY(-3px);
-  box-shadow: 0 12px 28px -4px rgba(239, 68, 68, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px -2px rgba(239, 68, 68, 0.5);
 }
 
 .tab-navigation {
@@ -686,206 +597,96 @@
 
 .currency-display {
   font-family: 'JetBrains Mono', monospace;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.025em;
-  color: #0f172a;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.dark .currency-display {
-  color: #f8fafc;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .currency-large {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 2.5rem;
-  font-weight: 900;
+  font-size: 2rem;
+  font-weight: 800;
   letter-spacing: 0.025em;
-  color: #0f172a;
-  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-.dark .currency-large {
-  color: #f8fafc;
-  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
 }
 
 .caption {
   font-size: 0.75rem;
-  color: #475569;
-  font-weight: 600;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  color: #6b7280;
+  font-weight: 500;
 }
 
 .dark .caption {
-  color: #94a3b8;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  color: #9ca3af;
 }
 
-/* Card components for metrics - Enhanced visibility */
+/* Card components for metrics */
 .revenue-card {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(99, 102, 241, 0.15) 100%);
-  border: 2px solid rgba(59, 130, 246, 0.4);
-  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 12px;
   transition: all 0.3s ease;
-  backdrop-filter: blur(8px);
-  box-shadow: 0 8px 24px -8px rgba(59, 130, 246, 0.3);
 }
 
 .dark .revenue-card {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.25) 0%, rgba(99, 102, 241, 0.25) 100%);
-  border: 2px solid rgba(59, 130, 246, 0.5);
-  box-shadow: 0 8px 24px -8px rgba(59, 130, 246, 0.4);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(99, 102, 241, 0.2) 100%);
+  border: 1px solid rgba(59, 130, 246, 0.4);
 }
 
 .cost-card {
-  background: linear-gradient(135deg, rgba(249, 115, 22, 0.15) 0%, rgba(234, 88, 12, 0.15) 100%);
-  border: 2px solid rgba(249, 115, 22, 0.4);
-  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.1) 0%, rgba(234, 88, 12, 0.1) 100%);
+  border: 1px solid rgba(249, 115, 22, 0.3);
+  border-radius: 12px;
   transition: all 0.3s ease;
-  backdrop-filter: blur(8px);
-  box-shadow: 0 8px 24px -8px rgba(249, 115, 22, 0.3);
 }
 
 .dark .cost-card {
-  background: linear-gradient(135deg, rgba(249, 115, 22, 0.25) 0%, rgba(234, 88, 12, 0.25) 100%);
-  border: 2px solid rgba(249, 115, 22, 0.5);
-  box-shadow: 0 8px 24px -8px rgba(249, 115, 22, 0.4);
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.2) 0%, rgba(234, 88, 12, 0.2) 100%);
+  border: 1px solid rgba(249, 115, 22, 0.4);
 }
 
 .profit-card {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.15) 100%);
-  border: 2px solid rgba(16, 185, 129, 0.4);
-  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 12px;
   transition: all 0.3s ease;
-  backdrop-filter: blur(8px);
-  box-shadow: 0 8px 24px -8px rgba(16, 185, 129, 0.3);
 }
 
 .dark .profit-card {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(5, 150, 105, 0.25) 100%);
-  border: 2px solid rgba(16, 185, 129, 0.5);
-  box-shadow: 0 8px 24px -8px rgba(16, 185, 129, 0.4);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.2) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.4);
 }
 
 .margin-card {
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(124, 58, 237, 0.15) 100%);
-  border: 2px solid rgba(139, 92, 246, 0.4);
-  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 12px;
   transition: all 0.3s ease;
-  backdrop-filter: blur(8px);
-  box-shadow: 0 8px 24px -8px rgba(139, 92, 246, 0.3);
 }
 
 .dark .margin-card {
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.25) 0%, rgba(124, 58, 237, 0.25) 100%);
-  border: 2px solid rgba(139, 92, 246, 0.5);
-  box-shadow: 0 8px 24px -8px rgba(139, 92, 246, 0.4);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(124, 58, 237, 0.2) 100%);
+  border: 1px solid rgba(139, 92, 246, 0.4);
 }
 
 .neutral-card {
-  background: linear-gradient(135deg, rgba(71, 85, 105, 0.15) 0%, rgba(51, 65, 85, 0.15) 100%);
-  border: 2px solid rgba(71, 85, 105, 0.4);
-  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(107, 114, 128, 0.1) 0%, rgba(75, 85, 99, 0.1) 100%);
+  border: 1px solid rgba(107, 114, 128, 0.3);
+  border-radius: 12px;
   transition: all 0.3s ease;
-  backdrop-filter: blur(8px);
-  box-shadow: 0 8px 24px -8px rgba(71, 85, 105, 0.3);
 }
 
 .dark .neutral-card {
-  background: linear-gradient(135deg, rgba(148, 163, 184, 0.25) 0%, rgba(100, 116, 139, 0.25) 100%);
-  border: 2px solid rgba(148, 163, 184, 0.5);
-  box-shadow: 0 8px 24px -8px rgba(148, 163, 184, 0.4);
+  background: linear-gradient(135deg, rgba(107, 114, 128, 0.2) 0%, rgba(75, 85, 99, 0.2) 100%);
+  border: 1px solid rgba(107, 114, 128, 0.4);
 }
 
-/* Background pattern - Enhanced */
+/* Background pattern */
 .bg-pattern {
-  background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.2) 1px, transparent 0);
-  background-size: 24px 24px;
+  background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.3) 1px, transparent 0);
+  background-size: 20px 20px;
 }
 
 .dark .bg-pattern {
-  background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.08) 1px, transparent 0);
-  background-size: 24px 24px;
-}
-
-/* Enhanced center alignment for main content */
-.profit-analysis-center {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  max-width: 500px;
-  margin: 0 auto;
-}
-
-.profit-metric-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  padding: 1.25rem 1.5rem;
-  border-radius: 16px;
-  margin-bottom: 1rem;
-  min-height: 70px;
-}
-
-.profit-metric-label {
-  font-size: 0.95rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.dark .profit-metric-label {
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.profit-metric-value {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 1.25rem;
-  font-weight: 900;
-  letter-spacing: 0.025em;
-  text-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
-}
-
-.dark .profit-metric-value {
-  text-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
-}
-
-/* Enhanced card hover effects */
-.revenue-card:hover, .cost-card:hover, .profit-card:hover, 
-.margin-card:hover, .neutral-card:hover {
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 16px 40px -12px currentColor;
-}
-
-/* Center recipe cards better */
-.recipe-grid-center {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-@media (max-width: 768px) {
-  .recipe-grid-center {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-  
-  .profit-metric-row {
-    padding: 1rem;
-    min-height: 60px;
-  }
-  
-  .profit-metric-value {
-    font-size: 1.1rem;
-  }
+  background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.1) 1px, transparent 0);
 }
 
 /* Float animation */
