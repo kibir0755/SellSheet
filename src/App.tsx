@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Download, FileText, Trash2, Plus, Sun, Moon, Calculator, DollarSign } from "lucide-react";
 import { useTheme } from "next-themes";
 import jsPDF from "jspdf";
-import VanillaTilt from "vanilla-tilt";
 import Papa from "papaparse";
 import autoTable from "jspdf-autotable";
 
