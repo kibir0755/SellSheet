@@ -804,19 +804,29 @@ export default function App() {
                         </div>
 
                         <div className="flex gap-3">
-                          <button 
-                            onClick={() => loadRecipe(recipe)}
+                          <Button
+                            variant="default"
+                            size="default"
+                            onClick={() => {
+                              console.log('Edit button clicked for recipe:', recipe.name);
+                              loadRecipe(recipe);
+                            }}
                             className="flex-1 btn-gradient-success px-4 py-2 rounded-lg font-semibold text-white transition-all duration-300 hover:transform hover:translateY(-2px)"
                           >
                             Edit
-                          </button>
-                          <button 
-                            onClick={() => deleteRecipe(recipe.id)}
+                          </Button>
+                          <Button
+                            variant="default"
+                            size="default"
+                            onClick={() => {
+                              console.log('Delete button clicked for recipe:', recipe.name);
+                              deleteRecipe(recipe.id);
+                            }}
                             className="flex-1 btn-gradient-danger px-4 py-2 rounded-lg font-semibold text-white transition-all duration-300 hover:transform hover:translateY(-2px) flex items-center justify-center"
                           >
                             <Trash2 className="mr-2 h-4 w-4" />
                             Delete
-                          </button>
+                          </Button>
                         </div>
                       </CardContent>
                     </Card>
